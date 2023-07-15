@@ -1,7 +1,7 @@
 import React from "react";
 import { nanoid } from 'nanoid';
 import { getDatabase, child, ref, set, get } from "firebase/database";
-import { isWebUri, isWebUrl } from 'valid-url';
+import { isWebUri } from 'valid-url';
 import OverlayTrigger from "react-bootstrap/OverlayTrigger";
 import Tooltip from "react-bootstrap/Tooltip";
 
@@ -82,7 +82,7 @@ class Form extends React.Component {
         var errorMessages = this.state.errorMessage; //make sure system isn't cleared, so use what msgs were there before
 
         //validate longURL
-        if (this.state.longURL.length == 0) {
+        if (this.state.longURL.length === 0) {
             errors.push("longURL");
             errorMessages["longURL"] = "Please enter your URL!";
         } else if (!isWebUri(this.state.longURL)) {
@@ -123,8 +123,8 @@ class Form extends React.Component {
 
     checkKeyExists = async () => {
         const dbRef = ref(getDatabase());
-        return get(child(dbRef, '/${this.state.preferedAlias}')).catch((error) => {
-            return false;
+        return get(child(dbRef, `/${this.state.preferedAlias}`)).catch((error) => {
+            return false
         });
     }
 
@@ -140,20 +140,20 @@ class Form extends React.Component {
         return (
             <div className="container">
                 <form autoComplete="off">
-                    <h3>Url Shortner!</h3> 
+                    <h3>Url Shortner!</h3>
 
-                    <div className = "form-group">
+                    <div className="form-group">
                         <label>Enter your Long URL</label>
                         <input
                             id="longURL"
                             onChange={this.handleChange}
-                            value={this.state.longURL} 
+                            value={this.state.longURL}
                             type="url"
                             required
                             className={
                                 this.hasError("longURL")
-                                ? "form-control is-invalid"
-                                : "form-control"
+                                    ? "form-control is-invalid"
+                                    : "form-control"
                             }
                             placeholder="https://www..."
                         />
@@ -167,10 +167,78 @@ class Form extends React.Component {
                         {this.state.errorMessage.longURL}
                     </div>
 
-                    
+                    <div className="form-group">
+                        <label htmlFor="basic-url">Your Short URL</label>
+                        <div className="input-group mb-3">
+                            <div className="input-group-prepend">
+                                <span className="input-group-text">minilinkit.com/</span>
+                            </div>
+                            <input
+                                id="preferedAlias"
+                                onChange={this.handleChange}
+                                value={this.state.preferedAlias}
+                                className={
+                                    this.hasError("preferedAlias")
+                                        ? "form-control is-invalid"
+                                        : "form-control"
+                                }
+                                type="text" placeholder="eg. 3fwias (Optional)"
+                            />
+                        </div>
+                        <div
+                            className={
+                                this.hasError("suggestedAlias") ? "text-danger" : "visually-hidden"
+                            }
+                        >
+                            {this.state.errorMessage.suggestedAlias}
+                        </div>
+                    </div>
+
+                    <button className="btn btn-primary" type="button" onClick={this.onSumbit}>
+                        {
+                            this.state.loading ?
+                                <div>
+                                    <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+
+                                </div> :
+                                <div>
+                                    <span className="visually-hidden spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    <span>Short URL</span>
+                                </div>
+
+                        }
+                    </button>
+
+                    {
+                        this.state.generatedURL === '' ?
+                            <div></div> :
+                            <div className="generatedurl">
+                                <span>Your generated URL is: </span>
+                                <div className="input-group mb-3">
+                                    <input disabled type="text" value={this.state.generatedURL} className="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="basic-addon2" />
+                                    <div className="input-group-append">
+                                        <OverlayTrigger
+                                            key={'top'}
+                                            placement={'top'}
+                                            overlay={
+                                                <Tooltip id={`tooltip-${'top'}`}>
+                                                    {this.state.toolTipMessage}
+                                                </Tooltip>
+                                            }
+                                        >
+                                            <button onClick={() => this.copyToClipBoard()} data-toggle="tooltip" data-placement="top" title="Tooltip on top" className="btn btn-outline-secondary" type="button">Copy</button>
+
+                                        </OverlayTrigger>
+
+                                    </div>
+                                </div>
+                            </div>
+                    }
                 </form>
             </div>
         )
     }
 
 }
+
+export default Form;
