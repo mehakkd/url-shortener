@@ -4,7 +4,8 @@ import './App.css';
 import Form from "./components/Form";
 
 function App() {
-  return (<Router>
+  return (
+  
     <div className="App">
       <div className="auth-wrapper">
         <div className="auth-inner">
@@ -13,8 +14,9 @@ function App() {
             <Route path="app" element={<Form/>} />
           </Routes>
         </div>
+        
       </div>
-    </div></Router>
+    </div>
   );
 }
 
