@@ -9,7 +9,7 @@ function App() {
       <div className="auth-wrapper">
         <div className="auth-inner">
           <Routes>
-            <Route path='/' element={<Form/>} />
+            <Route exact path='/' element={<Form/>} />
             <Route path="app" element={<Form/>} />
           </Routes>
         </div>
